@@ -1,73 +1,16 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/HEAD)
+## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/System.Runtime.Serialization/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.27...HEAD)
-
-**Documentation and other chores:**
-
-- Update 1 NuGet dependencies [\#11](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/11)
-
-## [v1.0.27](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.27) (2022-09-22)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.22...v1.0.27)
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.2...HEAD)
 
 **Implemented enhancements:**
 
-- Improve exception messages [\#10](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/10)
-- Read value methods now check for ongoing continuous operation [\#8](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/8)
+- Add attributes for serialization hints [\#1](https://github.com/nanoframework/System.Runtime.Serialization/pull/1)
 
-**Documentation and other chores:**
+## [v1.0.2](https://github.com/nanoframework/System.Runtime.Serialization/tree/v1.0.2) (2022-12-12)
 
-- Remove LastContinuousValue method from AdcChannel [\#9](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/9)
-
-## [v1.0.22](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.22) (2022-09-22)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.20...v1.0.22)
-
-**Implemented enhancements:**
-
-- Rework StartContinuousSampling and StartAveragedContinuousSampling [\#7](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/7)
-
-## [v1.0.20](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.20) (2022-09-22)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.18...v1.0.20)
-
-**Implemented enhancements:**
-
-- Rework start and stop continuous conversion [\#6](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/6)
-
-## [v1.0.18](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.18) (2022-09-22)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.14...v1.0.18)
-
-**Implemented enhancements:**
-
-- Rework StartContinuousSampling [\#5](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/5)
-
-**Fixed bugs:**
-
-- Fix namespace [\#3](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/3)
-
-**Documentation and other chores:**
-
-- Update 1 NuGet dependencies [\#4](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/4)
-
-## [v1.0.14](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.14) (2022-09-20)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/v1.0.11...v1.0.14)
-
-**Implemented enhancements:**
-
-- Miscelaneous improvements [\#2](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/2)
-
-## [v1.0.11](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/tree/v1.0.11) (2022-09-13)
-
-[Full Changelog](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/compare/45381c6c92cea2ac88f31c25c92c42fdb1626183...v1.0.11)
-
-**Implemented enhancements:**
-
-- Changes from API design [\#1](https://github.com/nanoframework/nanoFramework.GiantGecko.Adc/pull/1)
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/7e370a9ddefce93fbeadc1892040746601256bfa...v1.0.2)
 
 
 
