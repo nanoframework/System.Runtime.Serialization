@@ -2,7 +2,15 @@
 
 ## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/System.Runtime.Serialization/tree/HEAD)
 
-[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.2...HEAD)
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.5...HEAD)
+
+**Implemented enhancements:**
+
+- Update Hints attribute to allow using it in properties [\#2](https://github.com/nanoframework/System.Runtime.Serialization/pull/2)
+
+## [v1.0.5](https://github.com/nanoframework/System.Runtime.Serialization/tree/v1.0.5) (2022-12-12)
+
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.2...v1.0.5)
 
 **Implemented enhancements:**
 
