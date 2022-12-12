@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>nanoFramework.System.Runtime.Serialization</id>
+    <version>$version$</version>
+    <title>nanoFramework.System.Runtime.Serialization</title>
+    <authors>nanoframework</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.md</license>
+    <releaseNotes>
+    </releaseNotes>
+    <readme>docs\README.md</readme>
+    <developmentDependency>false</developmentDependency>
+    <projectUrl>https://github.com/nanoframework/System.Runtime.Serialization</projectUrl>
+    <icon>images\nf-logo.png</icon>
+    <repository type="git" url="https://github.com/nanoframework/System.Runtime.Serialization" commit="$commit$" />
+    <copyright>Copyright (c) .NET Foundation and Contributors</copyright>
+    <description>This package includes the System.Runtime.Serialization assembly for .NET nanoFramework C# projects.
+This package requires a target with nanoFramework.System.Runtime.Serialization v$nativeVersion$ (checksum $checksum$).</description>
+    <tags>nanoFramework C# csharp netmf netnf nanoFramework.System.Runtime.Serialization</tags>
+    <dependencies>
+      <dependency id="nanoFramework.CoreLibrary" version="1.12.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="nanoFramework.System.Runtime.Serialization\bin\Release\System.Runtime.Serialization.dll" target="lib\System.Runtime.Serialization.dll" />
+    <file src="nanoFramework.System.Runtime.Serialization\bin\Release\System.Runtime.Serialization.pdb" target="lib\System.Runtime.Serialization.pdb" />
+    <file src="nanoFramework.System.Runtime.Serialization\bin\Release\System.Runtime.Serialization.pdbx" target="lib\System.Runtime.Serialization.pdbx" />
+    <file src="nanoFramework.System.Runtime.Serialization\bin\Release\System.Runtime.Serialization.pe" target="lib\System.Runtime.Serialization.pe" />
+    <file src="nanoFramework.System.Runtime.Serialization\bin\Release\System.Runtime.Serialization.xml" target="lib\System.Runtime.Serialization.xml" />
+    <file src="assets\readme.txt" target="" />
+    <file src="README.md" target="docs\" />
+    <file src="assets\nf-logo.png" target="images" />
+    <file src="LICENSE.md" target="" />
+  </files>
+</package>
