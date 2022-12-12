@@ -10,7 +10,7 @@
 
 | Component | Build Status | NuGet Package |
 |:-|---|---|
-| nanoFramework.System.Runtime.Serialization | [![Build Status](https://dev.azure.com/nanoframework/System.Runtime.Serialization/_apis/build/status/System.Runtime.Serialization?branchName=main)](https://dev.azure.com/nanoframework/System.Runtime.Serialization/_build/latest?definitionId=98&branchName=main) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.System.Runtime.Serialization.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.System.Runtime.Serialization/) |
+| nanoFramework.System.Runtime.Serialization | [![Build Status](https://dev.azure.com/nanoframework/System.Runtime.Serialization/_apis/build/status/nanoframework.System.Runtime.Serialization?branchName=main)](https://dev.azure.com/nanoframework/System.Runtime.Serialization/_build/latest?definitionId=101&branchName=main) | [![NuGet](https://img.shields.io/nuget/v/nanoFramework.System.Runtime.Serialization.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/nanoFramework.System.Runtime.Serialization/) |
 
 ## Usage
 
