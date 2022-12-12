@@ -40,8 +40,14 @@
     <NFMDP_PE_ExcludeClassByName Include="ThisAssembly">
       <InProject>false</InProject>
     </NFMDP_PE_ExcludeClassByName>
+    <NFMDP_PE_ExcludeClassByName Include="System.Runtime.Serialization.FieldNoReflectionAttribute">
+      <InProject>false</InProject>
+    </NFMDP_PE_ExcludeClassByName>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldNoReflectionAttribute.cs" />
+    <Compile Include="SerializationHintsAttribute.cs" />
+    <Compile Include="SerializationOptions.cs" />
     <Compile Include="SerializationException.cs" />
     <Compile Include="BinaryFormatter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
