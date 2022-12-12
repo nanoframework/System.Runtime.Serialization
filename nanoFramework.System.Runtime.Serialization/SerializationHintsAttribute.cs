@@ -9,12 +9,11 @@ namespace System.Runtime.Serialization
     /// <summary>
     /// Provides hints to the binary serializer on how to improve serialization and decrease the size of the serialialized representation.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Class, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field
+                    | AttributeTargets.Property
+                    | AttributeTargets.Class, Inherited = true)]
     public class SerializationHintsAttribute : Attribute
     {
-        //
-        // Keep in sync with Microsoft.SPOT.Debugger.SerializationHintsAttribute!!!!
-        //
 
 #pragma warning disable S1104 // intended use in .NET nanoFramework for native usage
 
