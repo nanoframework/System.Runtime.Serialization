@@ -19,6 +19,8 @@ The BinaryFormatter class allow to serialize and deserialize to/from binary form
 The only requirement is to decorate a class or it's fields with the `[Serializable]` attribute.
 Other attributes are available to provide hints to the serialization engine so the serialization data it's reduced as much as possible. More on this on the next section.
 
+> **Warning** the implementation of binary serialization for .NET **nanoFramework** is **NOT** compatible with the one of .NET Framework or .NET Core, menaning that it's not possible to use this to exchange data between the two frameworks.
+
 ### Serializing a class
 
 Follows a `Person` class that will be used in the following examples.
