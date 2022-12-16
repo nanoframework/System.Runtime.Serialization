@@ -169,7 +169,22 @@ jobs:
       configuration: '$(BuildConfiguration)'
       msbuildArgs: '/p:PublicRelease=true'
       maximumCpuCount: true
-
+    
+  - task: CopyFiles@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: Collecting deployable artifacts
+    inputs:
+      sourceFolder: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper/bin/Release
+      Contents: |
+        *.nupkg
+        *.snupkg
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      flattenFolders: true
+  
   - task: VisualStudioTestPlatformInstaller@1
     condition: >-
       and(
@@ -193,7 +208,7 @@ jobs:
       testAssemblyVer2: |
         **\*Tests*.dll
         !**\obj\**
-      searchFolder: '$(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper'
+      searchFolder: '$(System.DefaultWorkingDirectory)/Tests/HelperTests'
       platform: '$(BuildPlatform)'
       configuration: '$(BuildConfiguration)'
       diagnosticsEnabled: true
@@ -218,40 +233,6 @@ jobs:
       )
     displayName: 'Publish Quality Gate Result'
     continueOnError: true
-    
-  - task: CopyFiles@1
-    condition: >-
-      and(
-        succeeded(),
-        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
-      )
-    displayName: Collecting deployable artifacts
-    inputs:
-      sourceFolder: $(Build.SourcesDirectory)
-      Contents: |
-        *$(nugetPackageName)*.nupkg
-        *$(nugetPackageName)*.snupkg
-        CHANGELOG.md
-      TargetFolder: '$(Build.ArtifactStagingDirectory)'
-      flattenFolders: true
-
-  - task: PowerShell@2
-    condition: >-
-      and(
-        succeeded(),
-        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
-      )
-    displayName: Check deployable artifacts
-    inputs:
-      targetType: 'inline'
-      script: |
-        $artifacts = (Get-ChildItem -Path "$env:Build_ArtifactStagingDirectory" -Recurse)
-  
-        if ($artifacts.Count -eq 0)
-        {
-            Write-Error "No deployable artifacts found!"
-            Exit 1
-        }
 
   - task: DotNetCoreCLI@2
     displayName: Install SignTool tool

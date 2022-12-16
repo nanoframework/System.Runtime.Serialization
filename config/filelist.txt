@@ -1,1 +1,2 @@
 **/nanoFramework.System.Runtime.Serialization
+**/nanoFramework.Serialization.Helper
