@@ -1,8 +1,16 @@
 # Changelog
 
-## [**Changes available only in 'Preview' NuGet packages:**](https://github.com/nanoframework/System.Runtime.Serialization/tree/HEAD)
+## [v1.0.10](https://github.com/nanoframework/System.Runtime.Serialization/tree/v1.0.10) (2022-12-16)
 
-[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.5...HEAD)
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.7...v1.0.10)
+
+**Documentation and other chores:**
+
+- Add usage content for README [\#3](https://github.com/nanoframework/System.Runtime.Serialization/pull/3)
+
+## [v1.0.7](https://github.com/nanoframework/System.Runtime.Serialization/tree/v1.0.7) (2022-12-12)
+
+[Full Changelog](https://github.com/nanoframework/System.Runtime.Serialization/compare/v1.0.5...v1.0.7)
 
 **Implemented enhancements:**
 
