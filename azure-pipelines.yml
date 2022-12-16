@@ -12,7 +12,6 @@ trigger:
       - .github_changelog_generator
       - .gitignore
       - CHANGELOG.md
-      - CODE_OF_CONDUCT.md
       - LICENSE.md
       - README.md
       - NuGet.Config
@@ -35,28 +34,334 @@ resources:
       name: nanoframework/nf-tools
       endpoint: nanoframework
 
-pool:
-  vmImage: 'windows-latest'
+jobs:
 
-variables:
-  DOTNET_NOLOGO: true
-  solution: 'nanoFramework.System.Runtime.Serialization.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  nugetPackageName: 'nanoFramework.System.Runtime.Serialization'
+##############################
+- job: Check_Build_Options
+  pool:
+    vmImage: 'windows-latest'
 
-steps:
+  steps:
+  
+  - checkout: self
 
-# step from template @ nf-tools repo
-# all build, update and publish steps
-- template: azure-pipelines-templates/class-lib-build.yml@templates
-  parameters:
-    sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
+  # check what changed
+  - powershell: |
+      git config --global user.email "nfbot"
+      git config --global user.name "nanoframework@outlook.com"
 
-# step from template @ nf-tools repo
-# report error
-- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
-  parameters:
-    status: 'failure'
-    webhookUrl: '$(DiscordWebhook)'
-    message: ''
+
+      $auth = "basic $([System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$(GitHubToken)"))))"
+      
+      if($env:System_PullRequest_PullRequestId -ne $null)
+      {
+          # get files changed in PR, if this is a PR
+          $commit = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:Build_Repository_Name/pulls/$env:System_PullRequest_PullRequestNumber/files" -Header @{"Authorization"="$auth"} -ContentType "application/json" -Method GET
+
+          # filter removed files              
+          $files = $commit.where{$_.status -ne 'removed'}
+      }
+      else
+      {
+          # get files changed in the commit, if this is NOT a PR
+          $commit = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:Build_Repository_Name/commits/$(Build.SourceVersion)" -Header @{"Authorization"="$auth"} -ContentType "application/json" -Method GET
+
+          # filter removed files              
+          $files = $commit.files.where{$_.status -ne 'removed'}
+      }
+
+      # get file names only
+      $files = $files | % {$_.filename}
+
+      Write-host "Files changed:"
+      $files | % { Write-host $_ }
+      Write-host ""
+
+      # set default values 
+      echo "##vso[task.setvariable variable=BUILD_NANO_LIB;isOutput=true]false"
+      echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]false"
+
+      if( (($files.where{$_.Contains('nanoFramework.Serialization.Helper')}).Count -gt 0)
+          -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0))
+      {
+          # files at nanoFramework.Serialization.Helper or shared folder
+          echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]true"
+
+          Write-host "Building Helper Library "
+      }
+
+      if( (($files.where{$_.Contains('nanoFramework.System.Runtime.Serialization')}).Count -gt 0)
+          -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0))
+      {
+          # files at class lib or shared folder
+          echo "##vso[task.setvariable variable=BUILD_NANO_LIB;isOutput=true]true"
+
+          Write-host "Building nano Library"
+      }
+    name: TargetsToBuild
+    displayName: Check what to build
+    condition: >-
+      and(
+        eq(variables['BUILD_HELPER__'], 'false')
+        eq(variables['BUILD_NANO_LIB__'], 'false')
+      )
+
+##############
+- job: Build_Helper
+  condition: >-
+    or(
+      eq(dependencies.Check_Build_Options.outputs['TargetsToBuild.BUILD_HELPER'], true),
+      eq(variables['BUILD_HELPER__'], 'true')
+    )
+  dependsOn:
+    Check_Build_Options
+
+  pool:
+    vmImage: 'windows-latest'
+
+  variables:
+    DOTNET_NOLOGO: true
+    BuildPlatform: 'Any CPU'
+    BuildConfiguration: 'Release'
+
+  steps:
+
+  - task: DotNetCoreCLI@2
+    displayName: Restore NuGet packages
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    inputs:
+      command: restore
+      verbosityRestore: minimal
+      projects: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+
+  - task: NuGetCommand@2
+    displayName: NuGet restore
+    retryCountOnTaskFailure: 10
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    inputs:
+      restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+    
+  - task: VSBuild@1
+    displayName: Build solution
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    inputs:
+      solution: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+      msbuildArgs: '/p:PublicRelease=true'
+      maximumCpuCount: true
+
+  - task: VisualStudioTestPlatformInstaller@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: 'Visual Studio Test Platform Installer'
+    inputs:
+      versionSelector: latestStable
+  
+  - task: VSTest@2
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: 'Running Unit Tests'
+    continueOnError: false
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: |
+        **\*Tests*.dll
+        !**\obj\**
+      searchFolder: '$(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization'
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+      diagnosticsEnabled: true
+      vsTestVersion: toolsInstaller
+      codeCoverageEnabled: true
+      runSettingsFile: '$(System.DefaultWorkingDirectory)/helper.runsettings'
+
+  - task: CopyFiles@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: Collecting deployable artifacts
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)
+      Contents: |
+        *$(nugetPackageName)*.nupkg
+        *$(nugetPackageName)*.snupkg
+        CHANGELOG.md
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+      flattenFolders: true
+
+  - task: PowerShell@2
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: Check deployable artifacts
+    inputs:
+      targetType: 'inline'
+      script: |
+        $artifacts = (Get-ChildItem -Path "$env:Build_ArtifactStagingDirectory" -Recurse)
+  
+        if ($artifacts.Count -eq 0)
+        {
+            Write-Error "No deployable artifacts found!"
+            Exit 1
+        }
+
+  - task: DotNetCoreCLI@2
+    displayName: Install SignTool tool
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    inputs:
+      command: custom
+      custom: tool
+      arguments: install --tool-path . SignClient
+
+  - pwsh: |
+      .\SignClient "Sign" `
+      --baseDirectory "$(Build.ArtifactStagingDirectory)" `
+      --input "**/*.nupkg" `
+      --config "$(Build.Repository.LocalPath)\config\SignClient.json" `
+      --filelist "$(Build.Repository.LocalPath)\config\filelist.txt" `
+      --user "$(SignClientUser)" `
+      --secret '$(SignClientSecret)' `
+      --name "Binary Formatter Helper" `
+      --description "Binary Formatter Helper" `
+      --descriptionUrl "https://github.com/$env:Build_Repository_Name"
+    displayName: Sign packages
+    continueOnError: true
+    condition: >-
+      and(
+        succeeded(),
+        eq(variables['System.PullRequest.PullRequestId'], ''),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish deployables artifacts
+    condition: >-
+      and(
+        succeeded(),
+        eq(variables['System.PullRequest.PullRequestId'], ''),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: deployables
+      ArtifactType: Container
+
+  - task: NuGetCommand@2
+    condition: >-
+      and(
+        succeeded(),
+        eq(variables['System.PullRequest.PullRequestId'], ''),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    continueOnError: true
+    displayName: Push NuGet packages to NuGet
+    inputs:
+      command: push
+      nuGetFeedType: external
+      allowPackageConflicts: true
+      packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      includeSymbols: true
+      publishFeedCredentials: 'NuGet-$(System.TeamProject)'
+
+  - task: GithubRelease@1
+    condition: >-
+      and(
+        succeeded(),
+        eq(variables['System.PullRequest.PullRequestId'], ''),
+        startsWith(variables['Build.SourceBranch'], 'refs/heads/main'),
+        not(contains(variables['Build.SourceBranch'], 'preview'))
+      )
+    displayName: Create/Update GitHub release
+    inputs:
+      action: edit
+      gitHubConnection: 'github.com_nano-$(System.TeamProject)'
+      tagSource: userSpecifiedTag
+      tag: v$(NBGV_NUGETPACKAGEVERSION)
+      title: '.NET nanoFramework Binary Formatter Helper v$(NBGV_NUGETPACKAGEVERSION)'
+      assets: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+      isPreRelease: false
+      addChangeLog: true
+
+##############
+- job: Build_ClassLib
+  condition: >-
+    or(
+      eq(dependencies.Check_Build_Options.outputs['TargetsToBuild.BUILD_NANO_LIB'], true),
+      eq(variables['BUILD_NANO_LIB__'], 'true')
+    )
+  dependsOn:
+    Check_Build_Options
+
+  pool:
+    vmImage: 'windows-latest'
+
+  variables:
+    DOTNET_NOLOGO: true
+    solution: 'nanoFramework.System.Runtime.Serialization.sln'
+    buildPlatform: 'Any CPU'
+    buildConfiguration: 'Release'
+    nugetPackageName: 'nanoFramework.System.Runtime.Serialization'
+
+  steps:
+
+  - checkout: self
+
+  # step from template @ nf-tools repo
+  # all build, update and publish steps
+  - template: azure-pipelines-templates/class-lib-build.yml@templates
+    parameters:
+      sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
+
+##################################
+# report build failure to Discord
+- job: Report_Build_Failure
+  dependsOn:
+  - Build_Helper
+  - Build_ClassLib
+  condition: >-
+    or(
+      failed('Build_Helper'),
+      failed('Build_ClassLib')
+    )
+
+  pool:
+    vmImage: 'windows-latest'
+
+  steps:
+
+  - checkout: self
+    fetchDepth: 1
+
+  # step from template @ nf-tools repo
+  - template: azure-pipelines-templates/discord-webhook.yml
+    parameters:
+      status: 'failure'
+      webhookUrl: '$(DiscordWebhook)'
+      message: ''
