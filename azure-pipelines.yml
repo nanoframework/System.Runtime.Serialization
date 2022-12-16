@@ -134,7 +134,7 @@ jobs:
     inputs:
       command: restore
       verbosityRestore: minimal
-      projects: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+      projects: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
 
   - task: NuGetCommand@2
     displayName: NuGet restore
@@ -145,7 +145,7 @@ jobs:
         not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
       )
     inputs:
-      restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+      restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
 
   - task: SonarCloudPrepare@1
     condition: >-
