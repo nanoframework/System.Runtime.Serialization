@@ -1,12 +1,60 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFrameworks>net6.0;net48</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>9.0</LangVersion>
+		<IncludeSymbols>True</IncludeSymbols>
+		<IsPublishable>False</IsPublishable>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup>
+		<Title>nanoFramework.Serialization.Helper</Title>
+    <PackageId>nanoFramework.Serialization.Helper</PackageId>
+    <version></version>
+    <Authors>nanoframework</Authors>
+		<Product>.NET nanoFramework Binary Formatter</Product>
+		<Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
+		<Company>.NET nanoFramework</Company>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/nanoframework/System.Runtime.Serialization</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/nanoframework/System.Runtime.Serialization</PackageProjectUrl>
+		<PackageIconUrl></PackageIconUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIcon>images\nf-logo.png</PackageIcon>
+		<Description>.NET nanoFramework binary formatter to serialize and deserialize binary data exchanged with nanoFramework devices.</Description>
+		<PackageTags>nanoFramework;nano Framework;NETNF;NETMF;Micro Framework;.net;serialization</PackageTags>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <Import Project="..\Serialization.Shared\Serialization.Shared.projitems" Label="Shared" />
+	
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.5.119" PrivateAssets="All" />
+	</ItemGroup>
+
+  <ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\assets\nf-logo.png">
+			<Pack>True</Pack>
+			<PackagePath>images</PackagePath>
+		</None>
+		<None Include="..\LICENSE.md">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

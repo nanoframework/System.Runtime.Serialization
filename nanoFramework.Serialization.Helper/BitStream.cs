@@ -4,6 +4,10 @@
 // See LICENSE file in the project root for full license information.
 //
 
+using System;
+using System.IO;
+using System.Threading;
+
 namespace nanoFramework.Serialization.Helper
 {
     internal class BitStream
@@ -44,8 +48,8 @@ namespace nanoFramework.Serialization.Helper
                 int bitsInLastPos)
             {
                 if (bitsInLastPos < 1 || bitsInLastPos > 8)
-                { 
-                    throw new ArgumentException("bits"); 
+                {
+                    throw new ArgumentException("bits");
                 }
 
                 _data = new byte[len];
