@@ -395,7 +395,7 @@ jobs:
     fetchDepth: 1
 
   # step from template @ nf-tools repo
-  - template: azure-pipelines-templates/discord-webhook.yml
+  - template: azure-pipelines-templates/discord-webhook.yml@templates
     parameters:
       status: 'failure'
       webhookUrl: '$(DiscordWebhook)'
