@@ -10,6 +10,13 @@ jobs:
   check_package_lock:
     name: nanoFramework
     uses: nanoframework/nf-tools/.github/workflows/check-package-lock.yml@main
+    with:
+      solution: 'nanoFramework.System.Runtime.Serialization.sln'    
+  check_package_lock:
+    name: nanoFramework
+    uses: nanoframework/nf-tools/.github/workflows/check-package-lock.yml@main
+    with:
+      solution: 'nanoFramework.Serialization.Helper'    
   check_nuget_latest:
     name: nanoFramework
     uses: nanoframework/nf-tools/.github/workflows/check-packages-updated.yml@main
