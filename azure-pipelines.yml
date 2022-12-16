@@ -102,7 +102,7 @@ jobs:
     displayName: Check what to build
     condition: >-
       and(
-        eq(variables['BUILD_HELPER__'], 'false')
+        eq(variables['BUILD_HELPER__'], 'false'),
         eq(variables['BUILD_NANO_LIB__'], 'false')
       )
 
