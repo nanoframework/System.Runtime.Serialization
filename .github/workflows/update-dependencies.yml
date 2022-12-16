@@ -7,8 +7,8 @@ name: Update .NET nanoFramework dependencies
 
 on:
   schedule:
-  # At 00:00 UTC every day.
-  - cron:  '00 00 * * *'
+  # At 00:00 UTC every wednesday.
+  - cron:  '00 00 * * Wed'
   repository_dispatch:
     types: update-dependencies
 

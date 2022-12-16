@@ -13,6 +13,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Serialization.Shared", "Serialization.Shared\Serialization.Shared.shproj", "{88D19908-57C1-4B09-9993-DE00CEE88BF4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EE61E67C-3D91-4792-9520-5C105FBDC736}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "UnitTests.Shared", "Tests\UnitTests.Shared\UnitTests.Shared.shproj", "{1CE3C165-8FDA-494C-A0E0-DFE45A65C526}"
+EndProject
+Project("{11A8DD76-328B-46DF-9F39-F559912D0360}") = "SerializationTests", "Tests\SerializationTests\SerializationTests.nfproj", "{7F60DF07-8314-4721-B225-377FBC767C7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,11 +33,25 @@ Global
 		{8D051613-D5BC-4C55-82DB-F67FF789F147}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D051613-D5BC-4C55-82DB-F67FF789F147}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8D051613-D5BC-4C55-82DB-F67FF789F147}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F60DF07-8314-4721-B225-377FBC767C7B}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1CE3C165-8FDA-494C-A0E0-DFE45A65C526} = {EE61E67C-3D91-4792-9520-5C105FBDC736}
+		{7F60DF07-8314-4721-B225-377FBC767C7B} = {EE61E67C-3D91-4792-9520-5C105FBDC736}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD6E2FC7-1FB4-4B1F-92CE-0565C1A88083}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Tests\UnitTests.Shared\UnitTests.Shared.projitems*{1ce3c165-8fda-494c-a0e0-dfe45a65c526}*SharedItemsImports = 13
+		Serialization.Shared\Serialization.Shared.projitems*{88d19908-57c1-4b09-9993-de00cee88bf4}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
