@@ -126,17 +126,18 @@ jobs:
 
   - checkout: self
 
-  - task: NuGetCommand@2
-    displayName: NuGet restore
-    retryCountOnTaskFailure: 10
+  - task: DotNetCoreCLI@2
+    displayName: Restore NuGet packages
     condition: >-
       and(
         succeeded(),
         not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
       )
     inputs:
-      selectOrConfig: select
-      restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
+      command: restore
+      verbosityRestore: minimal
+      projects: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
+      feedsToUse: 'select'
 
   - task: SonarCloudPrepare@1
     condition: >-
