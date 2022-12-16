@@ -124,18 +124,6 @@ jobs:
 
   steps:
 
-  - task: DotNetCoreCLI@2
-    displayName: Restore NuGet packages
-    condition: >-
-      and(
-        succeeded(),
-        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
-      )
-    inputs:
-      command: restore
-      verbosityRestore: minimal
-      projects: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
-
   - task: NuGetCommand@2
     displayName: NuGet restore
     retryCountOnTaskFailure: 10
@@ -173,7 +161,7 @@ jobs:
         not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
       )
     inputs:
-      solution: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
+      solution: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
       platform: '$(BuildPlatform)'
       configuration: '$(BuildConfiguration)'
       msbuildArgs: '/p:PublicRelease=true'
@@ -202,7 +190,7 @@ jobs:
       testAssemblyVer2: |
         **\*Tests*.dll
         !**\obj\**
-      searchFolder: '$(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization'
+      searchFolder: '$(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper'
       platform: '$(BuildPlatform)'
       configuration: '$(BuildConfiguration)'
       diagnosticsEnabled: true
@@ -364,8 +352,6 @@ jobs:
     nugetPackageName: 'nanoFramework.System.Runtime.Serialization'
 
   steps:
-
-  - checkout: self
 
   # step from template @ nf-tools repo
   # all build, update and publish steps
