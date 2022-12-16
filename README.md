@@ -14,12 +14,12 @@
 
 ## Usage
 
-The BinaryFormatter class allow to serialize and deserialize to/from binary format. This allows a compact storage and, because it's implemented in native code, faster execution for serialization and deserialization operations.
+The BinaryFormatter class serializes and deserializes an object, or an entire graph of connected objects, in binary format. This allows a compact storage or transition. Because it's implemented in native code, execution of serialization and deserialization operations are blazing fast.
 
-The only requirement is to decorate a class or it's fields with the `[Serializable]` attribute.
+The only requirement is to decorate a class or some of it's fields with the `[Serializable]` attribute.
 Other attributes are available to provide hints to the serialization engine so the serialization data it's reduced as much as possible. More on this on the next section.
 
-> **Warning** the implementation of binary serialization for .NET **nanoFramework** is **NOT** compatible with the one of .NET Framework or .NET Core, menaning that it's not possible to use this to exchange data between the two frameworks.
+> **Warning** the implementation of binary serialization for .NET **nanoFramework** is **NOT** compatible with the one of .NET Framework or .NET Core, meaning that it's not possible to use it to exchange data between the two frameworks. A helper class is available for .NET Framework and .NET Core to serializes and deserialize data coming from (or sent to) nanoFramework devices. Please read.......
 
 ### Serializing a class
 
@@ -98,12 +98,40 @@ public class Person
 ```
 
 The `SerializationHints` has several options to improve the data packing.
-Looking at the `ID` property above, which is of `int` type, without any optimization it takes 32bits to store. Now, this is used to store an ID which, let's assume for the sake of the example that only store IDs bigger than 2000. 
-Using the RangeBias with a value of `2000` that value will be subtracted to the value being stored. 
+Looking at the `ID` property above, which is of `int` type, without any optimization it takes 32bits to store. Now, this is used to store an ID which, let's assume for the sake of the example that only store IDs bigger than 2000.
+Using the RangeBias with a value of `2000` that value will be subtracted to the value being stored.
 In the code above, the ID with value 2700, would be serialized as (2700 - 2700 = 700) which can be stored as 16bits value instead of the 32bits that it would initially take.
 
-Another serialization hint is the array size. For the `ArrayProperty` let's assume that it will be always contain 2 elements. 
-Decorating it with `ArraySize` and the size of the array, will store that information as part of the serialization data thus saving space that otherwise would be wasted with a generic count for the size of the array. 
+Another serialization hint is the array size. For the `ArrayProperty` let's assume that it will be always contain 2 elements.
+Decorating it with `ArraySize` and the size of the array, will store that information as part of the serialization data thus saving space that otherwise would be wasted with a generic count for the size of the array.
+
+### Using it from .NET Framework or .NET Core
+
+A helper class for .NET Framework or .NET Core (distributed as [NuGet package](https://www.nuget.org/packages/nanoFramework.Serialization.Helper)) is available to serialize and deserialize data coming from (or sent to) nanoFramework devices.
+
+The usage it's exactly the same as with the code running in the nanoFramework device.
+
+To serialize a class:
+
+```csharp
+var binaryFormatter = new BinaryFormatter();
+var serializedPerson = binaryFormatter.Serialize(personOne);
+```
+
+To deserialize a binary representation back to a C# class:
+
+```csharp
+var binaryFormatter = new BinaryFormatter();
+var newPersonOne = binaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialized) as Person;
+```
+
+It is recommended that the source code for the classes being exchanged is the same in the projects for both frameworks.
+To accomplish this one can use any of the usual approaches, like shared projects or linked files.
+
+A detailed example of this can be found in the Unit Tests projects for the BinaryFormatter. They are using both techniques there.
+
+- [Unit Test project](Tests/HelperTests) for the Helper library
+- [Unit Test project](Tests/SerializationTests) for nanoFramework library
 
 ## Feedback and documentation
 
