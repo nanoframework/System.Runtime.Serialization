@@ -81,7 +81,7 @@ jobs:
       echo "##vso[task.setvariable variable=BUILD_NANO_LIB;isOutput=true]false"
       echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]false"
 
-      if( (($files.where{$_.Contains('nanoFramework.Serialization.Helper')}).Count -gt 0) -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0))
+      if( (($files.where{$_.Contains('nanoFramework.Serialization.Helper')}).Count -gt 0) -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0) -or (($files.where{$_.Contains('Tests/HelperTests')}).Count -gt 0) -or (($files.where{$_.Contains('Tests/UnitTests.Shared')}).Count -gt 0))
       {
           # files at nanoFramework.Serialization.Helper or shared folder
           echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]true"
@@ -89,7 +89,7 @@ jobs:
           Write-host "Building Helper Library "
       }
 
-      if( (($files.where{$_.Contains('nanoFramework.System.Runtime.Serialization')}).Count -gt 0) -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0))
+      if( (($files.where{$_.Contains('nanoFramework.System.Runtime.Serialization')}).Count -gt 0) -or (($files.where{$_.Contains('Serialization.Shared')}).Count -gt 0) -or (($files.where{$_.Contains('Tests/SerializationTests')}).Count -gt 0) -or (($files.where{$_.Contains('Tests/UnitTests.Shared')}).Count -gt 0))
       {
           # files at class lib or shared folder
           echo "##vso[task.setvariable variable=BUILD_NANO_LIB;isOutput=true]true"
