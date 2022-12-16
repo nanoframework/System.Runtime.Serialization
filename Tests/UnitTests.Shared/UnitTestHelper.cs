@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace nanoFramework.System.Runtime.Serialization.Tests
 {
-    internal class UnitTestHelper
+    internal static class UnitTestHelper
     {
         public static byte[] PersonOneSerialized = new byte[] {
             0x91, 0x74, 0x7A, 0xC0, 0x41, 0x12, 0x9B, 0xDA, 0x1B, 0x80,
