@@ -193,7 +193,7 @@ jobs:
       testAssemblyVer2: |
         **\*Tests*.dll
         !**\obj\**
-      searchFolder: '$(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper'
+      searchFolder: '$(System.DefaultWorkingDirectory)/Tests/HelperTests'
       platform: '$(BuildPlatform)'
       configuration: '$(BuildConfiguration)'
       diagnosticsEnabled: true
@@ -229,29 +229,11 @@ jobs:
     inputs:
       sourceFolder: $(Build.SourcesDirectory)
       Contents: |
-        *$(nugetPackageName)*.nupkg
-        *$(nugetPackageName)*.snupkg
+        *nanoFramework.Serialization.Helper*.nupkg
+        *nanoFramework.Serialization.Helper*.snupkg
         CHANGELOG.md
       TargetFolder: '$(Build.ArtifactStagingDirectory)'
       flattenFolders: true
-
-  - task: PowerShell@2
-    condition: >-
-      and(
-        succeeded(),
-        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
-      )
-    displayName: Check deployable artifacts
-    inputs:
-      targetType: 'inline'
-      script: |
-        $artifacts = (Get-ChildItem -Path "$env:Build_ArtifactStagingDirectory" -Recurse)
-  
-        if ($artifacts.Count -eq 0)
-        {
-            Write-Error "No deployable artifacts found!"
-            Exit 1
-        }
 
   - task: DotNetCoreCLI@2
     displayName: Install SignTool tool
