@@ -21,16 +21,17 @@ namespace nanoFramework.System.Runtime.Serialization.Tests
         public void SerializePersonClassTest()
         {
             // serialize person class
-            var personeOne = UnitTestHelper.CreatePersonOne();
+            var personOne = UnitTestHelper.CreatePersonOne();
 
 #if NANOFRAMEWORK_1_0
-            var serializedPerson = BinaryFormatter.Serialize(personeOne);
+            var serializedPerson = BinaryFormatter.Serialize(personOne);
 #else
             var binaryFormatter = new BinaryFormatter();
-            var serializedPerson = binaryFormatter.Serialize(personeOne);
+            var serializedPerson = binaryFormatter.Serialize(personOne);
 #endif            
 
             Assert.IsNotNull(serializedPerson);
+
             Assert.IsTrue(serializedPerson.Length == UnitTestHelper.PersonOneSerialized.Length, "PersonOne serialized data has different length.");
 
             CollectionAssert.AreEqual(UnitTestHelper.PersonOneSerialized, serializedPerson);
@@ -50,6 +51,7 @@ namespace nanoFramework.System.Runtime.Serialization.Tests
 #endif            
 
             Assert.IsNotNull(serializedComplexClass);
+
             Assert.IsTrue(serializedComplexClass.Length == UnitTestHelper.ComplexClassOneSerialized.Length, "ComplexClass serialized data has different length.");
 
             CollectionAssert.AreEqual(UnitTestHelper.ComplexClassOneSerialized, serializedComplexClass);
@@ -69,6 +71,7 @@ namespace nanoFramework.System.Runtime.Serialization.Tests
 #endif
 
             Assert.IsNotNull(serializedArrayList);
+
             Assert.IsTrue(serializedArrayList.Length == UnitTestHelper.ArrayListOneSerialized.Length, "ArrayListOne serialized data has different length.");
 
             CollectionAssert.AreEqual(UnitTestHelper.ArrayListOneSerialized, serializedArrayList);
