@@ -124,6 +124,8 @@ jobs:
 
   steps:
 
+  - checkout: self
+
   - task: NuGetCommand@2
     displayName: NuGet restore
     retryCountOnTaskFailure: 10
@@ -350,6 +352,7 @@ jobs:
     buildPlatform: 'Any CPU'
     buildConfiguration: 'Release'
     nugetPackageName: 'nanoFramework.System.Runtime.Serialization'
+    nugetConfigPath: '$(System.DefaultWorkingDirectory)/NuGet.Config'
 
   steps:
 
