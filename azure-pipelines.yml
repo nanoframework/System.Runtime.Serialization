@@ -160,7 +160,7 @@ jobs:
       SonarCloud: 'sonarcloud-$(System.TeamProject)'
       organization: 'nanoframework'
       scannerMode: 'MSBuild'
-      projectKey: '${{ parameters.sonarCloudProject }}'
+      projectKey: 'nanoframework_System.Runtime.Serialization.Helper'
       extraProperties: |
         sonar.exclusions=**/obj/**,**/*.dll
         sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/**.coverage
