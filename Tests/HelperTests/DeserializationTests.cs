@@ -24,76 +24,78 @@ namespace nanoFramework.System.Runtime.Serialization.Tests
         public void DeserializePersonClassTest()
         {
             // serialize person class
-            var personeOne = UnitTestHelper.CreatePersonOne();
+            var personOne = UnitTestHelper.CreatePersonOne();
 
 #if NANOFRAMEWORK_1_0
-            var newPersoneOne = BinaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialized) as Person;
+            var newPersonOne = BinaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialized) as Person;
 #else
             var binaryFormatter = new BinaryFormatter();
-            var newPersoneOne = binaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialized) as Person;
+            var newPersonOne = binaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialized) as Person;
 #endif            
 
-            Assert.IsNotNull(newPersoneOne);
-            Assert.AreEqual(newPersoneOne.LastName, personeOne.LastName);
-            Assert.AreEqual(newPersoneOne.FirstName, personeOne.FirstName);
-            Assert.AreEqual(newPersoneOne.ID, personeOne.ID);
-            Assert.AreEqual(newPersoneOne.Address, personeOne.Address);
-            Assert.AreEqual(newPersoneOne.Birthday, personeOne.Birthday);
-            Assert.AreEqual(newPersoneOne.Friend.LastName, personeOne.Friend.LastName);
-            Assert.AreEqual(newPersoneOne.Friend.FirstName, personeOne.Friend.FirstName);
-            Assert.AreEqual(newPersoneOne.Friend.ID, personeOne.Friend.ID);
-            Assert.AreEqual(newPersoneOne.Friend.Address, personeOne.Friend.Address);
-            Assert.AreEqual(newPersoneOne.Friend.Birthday, personeOne.Friend.Birthday);
+            Assert.IsNotNull(personOne);
+
+            Assert.AreEqual(personOne.LastName, newPersonOne.LastName);
+            Assert.AreEqual(personOne.FirstName, newPersonOne.FirstName);
+            Assert.AreEqual(personOne.ID, newPersonOne.ID);
+            Assert.AreEqual(personOne.Address, newPersonOne.Address);
+            Assert.AreEqual(personOne.Birthday, newPersonOne.Birthday);
+            Assert.AreEqual(personOne.Friend.LastName, newPersonOne.Friend.LastName);
+            Assert.AreEqual(personOne.Friend.FirstName, newPersonOne.Friend.FirstName);
+            Assert.AreEqual(personOne.Friend.ID, newPersonOne.Friend.ID);
+            Assert.AreEqual(personOne.Friend.Address, newPersonOne.Friend.Address);
+            Assert.AreEqual(personOne.Friend.Birthday, newPersonOne.Friend.Birthday);
         }
 
         [TestMethod]
         public void DeserializeComplexClassTest()
         {
             // serialize Complex class
-            var complexeClassOne = UnitTestHelper.CreateComplexClassOne();
+            var complexClassOne = UnitTestHelper.CreateComplexClassOne();
 
 #if NANOFRAMEWORK_1_0
-            var newComplexeClassOne = BinaryFormatter.Deserialize(UnitTestHelper.ComplexClassOneSerialized) as ComplexClass;
+            var newComplexClassOne = BinaryFormatter.Deserialize(UnitTestHelper.ComplexClassOneSerialized) as ComplexClass;
 #else
             var binaryFormatter = new BinaryFormatter();
-            var newComplexeClassOne = binaryFormatter.Deserialize(UnitTestHelper.ComplexClassOneSerialized) as ComplexClass;
+            var newComplexClassOne = binaryFormatter.Deserialize(UnitTestHelper.ComplexClassOneSerialized) as ComplexClass;
 #endif            
 
-            Assert.IsNotNull(newComplexeClassOne);
-            Assert.AreEqual(newComplexeClassOne.aInteger, complexeClassOne.aInteger);
-            Assert.AreEqual(newComplexeClassOne.aShort, complexeClassOne.aShort);
-            Assert.AreEqual(newComplexeClassOne.aByte, complexeClassOne.aByte);
-            Assert.AreEqual(newComplexeClassOne.aString, complexeClassOne.aString);
-            Assert.AreEqual(newComplexeClassOne.aFloat, complexeClassOne.aFloat);
-            Assert.AreEqual(newComplexeClassOne.aDouble, complexeClassOne.aDouble);
-            Assert.AreEqual(newComplexeClassOne.aBoolean, complexeClassOne.aBoolean);
-            Assert.AreEqual(newComplexeClassOne.Timestamp, complexeClassOne.Timestamp);
-            Assert.AreEqual(newComplexeClassOne.FixedTimestamp, complexeClassOne.FixedTimestamp);
-            Assert.AreEqual(newComplexeClassOne.nullObject, complexeClassOne.nullObject);
-            Assert.AreEqual(newComplexeClassOne.nanFloat, complexeClassOne.nanFloat);
-            Assert.AreEqual(newComplexeClassOne.nanDouble, complexeClassOne.nanDouble);
+            Assert.IsNotNull(newComplexClassOne);
 
-            CollectionAssert.AreEqual(newComplexeClassOne.intArray, complexeClassOne.intArray);
-            CollectionAssert.AreEqual(newComplexeClassOne.shortArray, complexeClassOne.shortArray);
-            CollectionAssert.AreEqual(newComplexeClassOne.byteArray, complexeClassOne.byteArray);
-            CollectionAssert.AreEqual(newComplexeClassOne.stringArray, complexeClassOne.stringArray);
-            CollectionAssert.AreEqual(newComplexeClassOne.floatArray, complexeClassOne.floatArray);
-            CollectionAssert.AreEqual(newComplexeClassOne.doubleArray, complexeClassOne.doubleArray);
+            Assert.AreEqual(complexClassOne.aInteger, newComplexClassOne.aInteger);
+            Assert.AreEqual(complexClassOne.aShort, newComplexClassOne.aShort);
+            Assert.AreEqual(complexClassOne.aByte, newComplexClassOne.aByte);
+            Assert.AreEqual(complexClassOne.aString, newComplexClassOne.aString);
+            Assert.AreEqual(complexClassOne.aFloat, newComplexClassOne.aFloat);
+            Assert.AreEqual(complexClassOne.aDouble, newComplexClassOne.aDouble);
+            Assert.AreEqual(complexClassOne.aBoolean, newComplexClassOne.aBoolean);
+            Assert.AreEqual(complexClassOne.Timestamp, newComplexClassOne.Timestamp);
+            Assert.AreEqual(complexClassOne.FixedTimestamp, newComplexClassOne.FixedTimestamp);
+            Assert.AreEqual(complexClassOne.nullObject, newComplexClassOne.nullObject);
+            Assert.AreEqual(complexClassOne.nanFloat, newComplexClassOne.nanFloat);
+            Assert.AreEqual(complexClassOne.nanDouble, newComplexClassOne.nanDouble);
 
-            Assert.AreEqual(newComplexeClassOne.Child.one, complexeClassOne.Child.one);
-            Assert.AreEqual(newComplexeClassOne.Child.two, complexeClassOne.Child.two);
-            Assert.AreEqual(newComplexeClassOne.Child.three, complexeClassOne.Child.three);
+            CollectionAssert.AreEqual(complexClassOne.intArray, newComplexClassOne.intArray);
+            CollectionAssert.AreEqual(complexClassOne.shortArray, newComplexClassOne.shortArray);
+            CollectionAssert.AreEqual(complexClassOne.byteArray, newComplexClassOne.byteArray);
+            CollectionAssert.AreEqual(complexClassOne.stringArray, newComplexClassOne.stringArray);
+            CollectionAssert.AreEqual(complexClassOne.floatArray, newComplexClassOne.floatArray);
+            CollectionAssert.AreEqual(complexClassOne.doubleArray, newComplexClassOne.doubleArray);
 
-            Assert.AreEqual(newComplexeClassOne.child1.one, complexeClassOne.child1.one);
-            Assert.AreEqual(newComplexeClassOne.child1.two, complexeClassOne.child1.two);
-            Assert.AreEqual(newComplexeClassOne.child1.three, complexeClassOne.child1.three);
+            Assert.AreEqual(complexClassOne.Child.one, newComplexClassOne.Child.one);
+            Assert.AreEqual(complexClassOne.Child.two, newComplexClassOne.Child.two);
+            Assert.AreEqual(complexClassOne.Child.three, newComplexClassOne.Child.three);
+
+            Assert.AreEqual(complexClassOne.child1.one, newComplexClassOne.child1.one);
+            Assert.AreEqual(complexClassOne.child1.two, newComplexClassOne.child1.two);
+            Assert.AreEqual(complexClassOne.child1.three, newComplexClassOne.child1.three);
         }
 
         [TestMethod]
         public void DeserializeArrayListTest()
         {
             // serialize array list
-            var personeOne = UnitTestHelper.CreateArrayListOne();
+            var arrayListOne = UnitTestHelper.CreateArrayListOne();
 
 #if NANOFRAMEWORK_1_0
             var newArrayListeOne = BinaryFormatter.Deserialize(UnitTestHelper.ArrayListOneSerialized) as ArrayList;
@@ -103,7 +105,8 @@ namespace nanoFramework.System.Runtime.Serialization.Tests
 #endif            
 
             Assert.IsNotNull(newArrayListeOne);
-            CollectionAssert.AreEqual(newArrayListeOne, personeOne);
+
+            CollectionAssert.AreEqual(arrayListOne, newArrayListeOne);
         }
     }
 }
