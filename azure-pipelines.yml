@@ -145,6 +145,7 @@ jobs:
         not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
       )
     inputs:
+      selectOrConfig: select
       restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.Serialization.Helper.sln
 
   - task: SonarCloudPrepare@1
