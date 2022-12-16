@@ -148,7 +148,24 @@ jobs:
       )
     inputs:
       restoreSolution: $(System.DefaultWorkingDirectory)/nanoFramework.System.Runtime.Serialization.sln
-    
+
+  - task: SonarCloudPrepare@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: 'Prepare analysis on SonarCloud'
+    inputs:
+      SonarCloud: 'sonarcloud-$(System.TeamProject)'
+      organization: 'nanoframework'
+      scannerMode: 'MSBuild'
+      projectKey: '${{ parameters.sonarCloudProject }}'
+      extraProperties: |
+        sonar.exclusions=**/obj/**,**/*.dll
+        sonar.cs.vscoveragexml.reportsPaths=$(Agent.TempDirectory)/**/**.coverage
+        sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/**/**.trx
+      
   - task: VSBuild@1
     displayName: Build solution
     condition: >-
@@ -194,6 +211,24 @@ jobs:
       codeCoverageEnabled: true
       runSettingsFile: '$(System.DefaultWorkingDirectory)/helper.runsettings'
 
+  - task: SonarCloudAnalyze@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: 'Run Code Analysis'
+    continueOnError: true
+  
+  - task: SonarCloudPublish@1
+    condition: >-
+      and(
+        succeeded(),
+        not(startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))
+      )
+    displayName: 'Publish Quality Gate Result'
+    continueOnError: true
+    
   - task: CopyFiles@1
     condition: >-
       and(
