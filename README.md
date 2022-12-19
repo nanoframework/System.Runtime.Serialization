@@ -19,7 +19,9 @@ The BinaryFormatter class serializes and deserializes an object, or an entire gr
 The only requirement is to decorate a class or some of it's fields with the `[Serializable]` attribute.
 Other attributes are available to provide hints to the serialization engine so the serialization data it's reduced as much as possible. More on this on the next section.
 
-> **Warning** the implementation of binary serialization for .NET **nanoFramework** is **NOT** compatible with the one of .NET Framework or .NET Core, meaning that it's not possible to use it to exchange data between the two frameworks. A helper class is available for .NET Framework and .NET Core to serializes and deserialize data coming from (or sent to) nanoFramework devices. Please read.......
+Native support for this feature it's available in all targets that have support for reflection enabled, unless support for this has been disabled by a build option.
+
+> **Warning** the implementation of binary serialization for .NET **nanoFramework** is **NOT** compatible with the one of .NET Framework or .NET Core, meaning that it's not possible to use it to exchange data between the two frameworks. A helper class is available for .NET Framework and .NET Core to serializes and deserialize data coming from (or sent to) nanoFramework devices. More on this in the respective [section](#using-it-from-net-framework-or-net-core) bellow.
 
 ### Serializing a class
 
@@ -64,9 +66,9 @@ var nestedTestClass = new Person()
 byte[] serializedPerson = BinaryFormatter.Serialize(nestedTestClass);
 ```
 
-The `serializedPerson` byte array contains the binary representation for the `nestedTestClass`.
+The `serializedPerson` byte array above will contain the binary representation of the `nestedTestClass`.
 
-> **Note** Both properties and fields will be serialized unless they are decorated with the `NonSerialized` attribute.
+> **Note** As default all properties and fields in a serializable class will be serialized unless they are decorated with the `NonSerialized` attribute.
 
 ### Deserializing a class
 
@@ -89,7 +91,7 @@ public class Person
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Address { get; set; }
+    public string Address;
     public DateTime Birthday { get; set; }
     [SerializationHints(RangeBias = 2000)]
     public int ID { get; set; }
@@ -130,7 +132,7 @@ var newPersonOne = binaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialize
 It is recommended that the source code for the classes being exchanged is the same in the projects for both frameworks.
 To accomplish this one can use any of the usual approaches, like shared projects or linked files.
 
-> **Warning** Make use the fully qualified name of the class is the same at both ends. Failing to do so will prevent properly deserialize the data. This is another good reasone for sharing the same code file in both projects.
+> **Warning** Make sure the fully qualified name of the class is the same at both ends. Failing to do so will prevent properly deserialize the data. This is another good reason for sharing the same code file in both projects.
 
 A detailed example of this can be found in the Unit Tests projects for the BinaryFormatter. They are using both techniques there.
 
