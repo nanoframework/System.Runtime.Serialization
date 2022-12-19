@@ -31,7 +31,7 @@ public class Person
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Address { get; set; }
+    public string Address;
     public DateTime Birthday { get; set; }
     public int ID { get; set; }
     public string[] ArrayProperty { get; set; }
@@ -65,6 +65,8 @@ byte[] serializedPerson = BinaryFormatter.Serialize(nestedTestClass);
 ```
 
 The `serializedPerson` byte array contains the binary representation for the `nestedTestClass`.
+
+> **Note** Both properties and fields will be serialized unless they are decorated with the `NonSerialized` attribute.
 
 ### Deserializing a class
 
@@ -127,6 +129,8 @@ var newPersonOne = binaryFormatter.Deserialize(UnitTestHelper.PersonOneSerialize
 
 It is recommended that the source code for the classes being exchanged is the same in the projects for both frameworks.
 To accomplish this one can use any of the usual approaches, like shared projects or linked files.
+
+> **Warning** Make use the fully qualified name of the class is the same at both ends. Failing to do so will prevent properly deserialize the data. This is another good reasone for sharing the same code file in both projects.
 
 A detailed example of this can be found in the Unit Tests projects for the BinaryFormatter. They are using both techniques there.
 
