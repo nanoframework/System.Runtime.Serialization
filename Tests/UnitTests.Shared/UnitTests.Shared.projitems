@@ -10,7 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)UnitTestHelper.cs" />
-    <Compile Include="..\UnitTests.Shared\ComplexClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ComplexClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Person.cs" />
   </ItemGroup>
 </Project>
