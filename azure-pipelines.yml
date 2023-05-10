@@ -52,7 +52,13 @@ steps:
   parameters:
     sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
     runUnitTests: true
-    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\.runsettings'
+    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\nano.runsettings'
+
+# run Unit Tests for helper class lib
+- template: azure-pipelines-templates/run-unit-tests.yml@templates
+  parameters:
+    skipInstall: true
+    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\helper.runsettings'
 
 # step from template @ nf-tools repo
 # report error
