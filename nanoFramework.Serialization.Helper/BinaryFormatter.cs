@@ -1786,6 +1786,11 @@ namespace nanoFramework.Serialization.Helper
             //Ok, this is really evil. But it's this or 800 exceptions trying to load assemblies through BF.Initialize
 
             //This is for dealing with generics                        
+            if(t.FullName == null)
+            {
+                return false;
+            }
+            
             if (t.FullName.IndexOf('`') >= 0)
             {
                 return false;
