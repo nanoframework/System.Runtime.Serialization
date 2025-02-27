@@ -29,8 +29,8 @@ resources:
       name: nanoframework/nf-tools
       endpoint: nanoframework
 
-pool:
-  vmImage: 'windows-latest'
+# pool:
+#   vmImage: 'windows-latest'
 
 variables:
   - group: sign-client-credentials
@@ -45,26 +45,242 @@ variables:
   - name: nugetPackageName
     value: 'nanoFramework.System.Runtime.Serialization'
 
-steps:
+stages:
+- stage: BuildPrep
+  displayName: 'Build preparations'
+  jobs:
+  - job: RunPreChecks
+    displayName: 'Running prep checks'
 
-# step from template @ nf-tools repo
-# all build, update and publish steps
-- template: azure-pipelines-templates/class-lib-build.yml@templates
-  parameters:
-    sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
-    runUnitTests: true
-    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\nano.runsettings'
+    pool:
+      vmImage: 'ubuntu-latest'
 
-# run Unit Tests for helper class lib
-- template: azure-pipelines-templates/run-unit-tests.yml@templates
-  parameters:
-    skipInstall: true
-    unitTestRunsettings: '$(System.DefaultWorkingDirectory)\helper.runsettings'
+    steps:
+      - checkout: self
+        fetchDepth: 1
 
-# step from template @ nf-tools repo
-# report error
-- template: azure-pipelines-templates/discord-webhook-task.yml@templates  
-  parameters:
-    status: 'failure'
-    webhookUrl: '$(DiscordWebhook)'
-    message: ''
+      - task: PowerShell@2
+        displayName: Check changes
+        name: CheckChanges
+        inputs:
+          targetType: 'inline'
+          script: |
+            git config --global user.email "nanoframework@outlook.com"
+            git config --global user.name "nfbot"
+
+            $auth = "basic $([System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(":$(GitHubToken)")))"
+
+            if($env:Build_Reason -eq "Manual")
+            {
+              # this is a manual build, no need to check anything 
+              Write-host "##[command] Manual build"
+            }      
+            else
+            {
+              if($env:System_PullRequest_PullRequestNumber -ne $null)
+              {
+                # get files changed in PR, if this is a PR
+                $commit = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:BUILD_REPOSITORY_NAME/pulls/$env:System_PullRequest_PullRequestNumber/files" -Header @{"Authorization"="$auth"} -ContentType "application/json" -Method GET
+
+                # filter removed files              
+                $files = $commit.where{$_.status -ne 'removed'}
+              }
+              else
+              {
+                # get files changed in the commit, if this is NOT a PR
+                $commit = Invoke-RestMethod -Uri "https://api.github.com/repos/$env:BUILD_REPOSITORY_NAME/commits/$(Build.SourceVersion)" -Header @{"Authorization"="$auth"} -ContentType "application/json" -Method GET
+
+                # filter removed files              
+                $files = $commit.files.where{$_.status -ne 'removed'}
+              }
+
+              # get file names only
+              $files = $files | % {$_.filename}
+
+              Write-host "##[group] Files changed:"
+              $files | % { Write-host $_ }
+              Write-host "##[endgroup]"
+
+              # set default values 
+              echo "##vso[task.setvariable variable=BUILD_LIBRARY;isOutput=true]false"  
+              echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]false"  
+
+              if( 
+                  (($files.where{$_.Contains('/')}).Count -eq 0) -Or
+                  (($files.where{$_.StartsWith('Serialization.Shared')}).Count -gt 0) -Or
+                  (($files.where{$_.StartsWith('Tests')}).Count -gt 0)
+                )
+              {
+                # files at:
+                # - repo root
+                # - tests
+                # - shared location
+
+                echo "##vso[task.setvariable variable=BUILD_LIBRARY;isOutput=true]true"
+                echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]true"
+                
+                Write-host "##[command] Building both solutions"
+              }
+
+              if( ($files.where{$_.Contains('nanoFramework.Serialization.Helper')}).Count -gt 0)
+              {
+                # files at nanoFramework.Serialization.Helper folder
+                echo "##vso[task.setvariable variable=BUILD_HELPER;isOutput=true]true"
+
+                Write-host "##[command] Build Helper"
+              }
+
+              if( ($files.where{$_.Contains('nanoFramework.System.Runtime.Serialization')}).Count -gt 0)
+              {
+                # files at nanoFramework.System.Runtime.Serialization folder
+                echo "##vso[task.setvariable variable=BUILD_LIBRARY;isOutput=true]true"
+
+                Write-host "##[command] Build Library"
+              }
+            }
+
+- stage: BuildLibrary
+  displayName: 'Build Library'
+  condition: eq(dependencies.BuildPrep.outputs['RunPreChecks.CheckChanges.BUILD_LIBRARY'], 'true')
+  dependsOn: BuildPrep
+  
+  jobs:
+  - job: BuildLibrary
+    displayName: 'Building Library'
+
+    pool:
+      vmImage: 'windows-latest'
+
+    steps:
+
+      # build library
+      - template: azure-pipelines-templates/class-lib-build.yml@templates
+        parameters:
+          sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
+          runUnitTests: true
+          unitTestRunsettings: '$(System.DefaultWorkingDirectory)\nano.runsettings'
+
+      # report error
+      - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+        parameters:
+          status: 'failure'
+          webhookUrl: '$(DiscordWebhook)'
+          message: ''
+
+- stage: BuildHelper
+  displayName: 'Build Helper'
+  condition: eq(dependencies.BuildPrep.outputs['RunPreChecks.CheckChanges.BUILD_HELPER'], 'true')
+  dependsOn: BuildPrep
+
+  jobs:
+  - job: BuildHelper
+    displayName: 'Building Helper'
+
+    pool:
+      vmImage: 'windows-latest'
+    
+    variables:
+      - name: helperSolution
+        value: 'nanoFramework.Serialization.Helper.sln'
+
+    steps:
+      - checkout: self
+
+      - task: NuGetCommand@2
+        displayName: NuGet restore
+        inputs:
+          restoreSolution: '$(helperSolution)'
+          feedsToUse: config
+          nugetConfigPath: 'NuGet.config'
+
+      - script: dotnet build $(helperSolution) -c Release -p:Platform="Any CPU" -p:PublicRelease=true --no-restore /t:build,pack
+        displayName: Build and pack Helper
+        condition: succeeded()
+      
+      # run Unit Tests for helper class lib
+      - template: azure-pipelines-templates/run-unit-tests.yml@templates
+        parameters:
+          skipInstall: false
+          unitTestRunsettings: '$(System.DefaultWorkingDirectory)\helper.runsettings'
+
+      - task: CopyFiles@1
+        condition: succeeded()
+        displayName: Collecting deployable artifacts
+        inputs:
+          sourceFolder: $(Agent.BuildDirectory)
+          Contents: |
+            **\nanoFramework.Serialization.Helper*.nupkg
+            **\nanoFramework.Serialization.Helper*.snupkg
+          TargetFolder: '$(Build.ArtifactStagingDirectory)'
+          flattenFolders: true
+    
+      - task: PowerShell@2
+        condition: succeeded()
+        displayName: Check deployable artifacts
+        inputs:
+          targetType: 'inline'
+          script: |
+            $artifacts = (Get-ChildItem -Path "$env:Build_ArtifactStagingDirectory" -Recurse)
+    
+            if ($artifacts.Count -eq 0)
+            {
+                Write-Error "No deployable artifacts found!"
+                Exit 1
+            }
+    
+      - task: DotNetCoreCLI@2
+        displayName: Install Sign Client CLI
+        condition: succeeded()
+        inputs:
+          command: custom
+          custom: tool
+          arguments: install --tool-path . sign --version 0.9.1-beta.23530.1
+      
+      - pwsh: |
+          .\sign code azure-key-vault `
+          "**/*.nupkg" `
+          --base-directory "$(Build.ArtifactStagingDirectory)" `
+          --description ".NET nanoFramework Serialization helper" `
+          --description-url "https://github.com/$env:Build_Repository_Name" `
+          --azure-key-vault-tenant-id "$(SignTenantId)" `
+          --azure-key-vault-client-id "$(SignClientId)" `
+          --azure-key-vault-client-secret "$(SignClientSecret)" `
+          --azure-key-vault-certificate "$(SignKeyVaultCertificate)" `
+          --azure-key-vault-url "$(SignKeyVaultUrl)" `
+          --timestamp-url http://timestamp.digicert.com
+        displayName: Sign packages
+        continueOnError: true
+        condition: succeeded()
+    
+      # publish artifacts (only possible if this is not a PR originated on a fork)
+      - task: PublishPipelineArtifact@1
+        condition: succeeded()
+        displayName: Publish helper artifacts
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)'
+          artifactName: helper-artifacts
+          artifactType: pipeline
+    
+      # push NuGet packages to NuGet
+      - task: NuGetCommand@2
+        displayName: Push NuGet packages to NuGet
+        condition: >-
+          and(
+            succeeded(),
+            eq(variables['System.PullRequest.PullRequestNumber'], '')
+          )
+        continueOnError: true
+        inputs:
+          command: push
+          nuGetFeedType: external
+          packagesToPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
+          allowPackageConflicts: true
+          includeSymbols: true
+          publishFeedCredentials: 'NuGet-$(System.TeamProject)'
+          
+      # report error
+      - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
+        parameters:
+          status: 'failure'
+          webhookUrl: '$(DiscordWebhook)'
+          message: ''
