@@ -158,7 +158,8 @@ stages:
         parameters:
           sonarCloudProject: 'nanoframework_System.Runtime.Serialization'
           runUnitTests: true
-          unitTestRunsettings: '$(System.DefaultWorkingDirectory)\nano.runsettings'
+          unitTestRunsettings: '$(System.DefaultWorkingDirectory)\.runsettings'
+          usePreviewBuild: true
 
       # report error
       - template: azure-pipelines-templates/discord-webhook-task.yml@templates  
