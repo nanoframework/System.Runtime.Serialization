@@ -2235,11 +2235,8 @@ namespace nanoFramework.Serialization.Helper
             try
             {
                 MemoryStream stream = new MemoryStream();
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-                bf.Serialize(stream, graph);
-
-                SaveToFile(stream.ToArray(), pathPrefix, "orig", dt);
+                byte[] data = Encoding.UTF8.GetBytes(graph?.ToString() ?? string.Empty);
+                SaveToFile(data, pathPrefix, "orig", dt);
             }
             catch
             {

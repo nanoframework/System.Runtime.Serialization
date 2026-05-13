@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net48</TargetFrameworks>
+    <TargetFrameworks>net9.0;net48</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
@@ -45,8 +45,8 @@
   <Import Project="..\Serialization.Shared\Serialization.Shared.projitems" Label="Shared" />
 	
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-		<PackageReference Include="Nerdbank.GitVersioning" Version="3.7.115" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.300" PrivateAssets="All" />
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" PrivateAssets="All" />
 	</ItemGroup>
 
   <ItemGroup>
